@@ -1,0 +1,10 @@
+[
+ {"tienda":"LatinBien","estado":"Automática","metodo":"Búsqueda de la tienda en línea (Odoo)."},
+ {"tienda":"Damasco","estado":"Automática","metodo":"Catálogo público de damascovzla.com (VTEX)."},
+ {"tienda":"IVOO","estado":"Automática","metodo":"Catálogo público de ivoo.com (Magento)."},
+ {"tienda":"MegaTecno","estado":"Automática","metodo":"Catálogo público de megatecno.com.ve (WooCommerce)."},
+ {"tienda":"Frigilux","estado":"Limitada","metodo":"Catálogo público (WooCommerce), pero activó una verificación anti-bots tras varias consultas seguidas. Hay que consultar más despacio."},
+ {"tienda":"SoyTechno","estado":"Bloqueada","metodo":"Protegida por Cloudflare. Solo se puede consultar desde un navegador real."},
+ {"tienda":"Multimax","estado":"Bloqueada","metodo":"multimax.com.ve está protegida por Cloudflare. multimax.net es Multimax Panamá y no se usa."},
+ {"tienda":"Bonobo","estado":"Sin web","metodo":"No se encontró tienda en línea."}
+]

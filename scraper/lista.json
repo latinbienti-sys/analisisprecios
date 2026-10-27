@@ -1,0 +1,36 @@
+[
+ {"producto":"iPhone 17 Pro Max 256GB eSIM","categoria":"Teléfonos","tiendas":{
+   "LatinBien":{"q":"iphone 17 pro max","m":"iPhone 17 Pro Max 256GB Esim"},
+   "Damasco":{"q":"iphone 17 pro max","m":"IPHONE 17 PRO MAX 256 ESIM"}}},
+ {"producto":"Xiaomi Redmi 15C 8GB/256GB","categoria":"Teléfonos","tiendas":{
+   "LatinBien":{"q":"redmi 15c","m":"Redmi 15C 8GB/256GB"},
+   "Damasco":{"q":"redmi 15c","m":"Redmi 15C 256 GB + 8 GB"},
+   "IVOO":{"q":"redmi 15c","m":"Redmi 15C 8+256GB"}}},
+ {"producto":"Apple AirPods 4","categoria":"Audio","tiendas":{
+   "LatinBien":{"q":"airpods","m":"Apple AirPods 4"},
+   "Damasco":{"q":"airpods","m":"AUDIFONO AIRPODS 4 APPLE"}}},
+ {"producto":"Apple AirPods 4 con cancelación de ruido","categoria":"Audio","tiendas":{
+   "LatinBien":{"q":"airpods","m":"AirPods 4 with Acttive Noise"},
+   "Damasco":{"q":"airpods","m":"AIRPODS 4 WITH ACTIVE NOISE"}}},
+ {"producto":"Apple AirPods Max","categoria":"Audio","tiendas":{
+   "LatinBien":{"q":"airpods","m":"Apple Airpods Max"},
+   "Damasco":{"q":"airpods","m":"AirPods Max USB-C","similar":true}}},
+ {"producto":"Ninja Air Fryer Max XL AF161","categoria":"Cocina","tiendas":{
+   "LatinBien":{"q":"ninja air fryer","m":"AF161"},
+   "Damasco":{"q":"ninja","m":"AF161"}}},
+ {"producto":"Aiwa 32\" HD Google TV","categoria":"Televisores","tiendas":{
+   "LatinBien":{"q":"aiwa 32","m":"Aiwa 32\" HD Smart TV"},
+   "IVOO":{"q":"aiwa 32","m":"32\" Google TV HD Aiwa"}}},
+ {"producto":"Aiwa 43\" QLED FHD Google TV","categoria":"Televisores","tiendas":{
+   "LatinBien":{"q":"aiwa 43","m":"Aiwa QLED 43"},
+   "IVOO":{"q":"aiwa 43","m":"Google TV QLED FHD Aiwa"}}},
+ {"producto":"Router TP-Link Archer C80 AC1900","categoria":"Redes","tiendas":{
+   "LatinBien":{"q":"archer c80","m":"Archer C80"},
+   "MegaTecno":{"q":"archer c80","m":"Archer C80"}}},
+ {"producto":"Impresora Epson EcoTank L3250","categoria":"Computación","tiendas":{
+   "Damasco":{"q":"epson l3250","m":"L3250"},
+   "MegaTecno":{"q":"l3250","m":"L3250"}}},
+ {"producto":"Corneta JBL Flip 6","categoria":"Audio","tiendas":{
+   "Damasco":{"q":"flip 6","m":"JBL Flip 6"},
+   "IVOO":{"q":"flip 6","m":"JBL Flip 6"}}}
+]

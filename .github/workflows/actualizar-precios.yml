@@ -1,0 +1,32 @@
+name: Actualizar precios
+
+on:
+  schedule:
+    - cron: '0 12 * * *'   # todos los días, 8:00 a.m. hora de Venezuela
+  workflow_dispatch:        # permite correrlo a mano desde la pestaña Actions
+
+permissions:
+  contents: write
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Consultar precios
+        run: node scraper/build.mjs scraper/lista.json data/precios.nuevo.json
+      - name: Guardar solo si hay datos
+        run: |
+          n=$(node -e "console.log(require('./data/precios.nuevo.json').length)")
+          echo "Precios encontrados: $n"
+          if [ "$n" -gt 0 ]; then mv data/precios.nuevo.json data/precios.json; else rm data/precios.nuevo.json; echo "Sin datos, se mantiene la versión anterior"; fi
+      - name: Publicar cambios
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add data/precios.json
+          git diff --cached --quiet || git commit -m "Actualiza precios $(date -u +%Y-%m-%d)"
+          git push

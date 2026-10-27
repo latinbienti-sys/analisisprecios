@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comparativo de Precios Mérida</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Instrument+Sans:wght@400;500;600&display=swap">
+<style>
+  /* Layout: encabezado con cifras, tabla comparativa a todo el ancho, luego dos tarjetas y el detalle */
+  :root {
+    --bg: #f6f7f4; --panel: #ffffff; --fg: #1d2420; --muted: #5d6a63; --line: #dfe4df;
+    --accent: #1f6f5c; --ok: #1a7f4b; --bad: #b5382f; --warn: #a8670c; --bar: #c9d3cd;
+    --display: "Fraunces", Georgia, serif; --body: "Instrument Sans", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #121614; --panel: #1a201d; --fg: #e6ebe7; --muted: #9aa8a0; --line: #2c3530;
+      --accent: #5fc2a6; --ok: #5ccf8e; --bad: #f08a80; --warn: #e3ad5a; --bar: #3a4640; color-scheme: dark; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.5 var(--body); }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 32px max(16px, env(safe-area-inset-right)) 48px max(16px, env(safe-area-inset-left)); display: grid; gap: 24px; }
+  h1 { font: 600 clamp(1.8rem, 4vw, 2.6rem)/1.1 var(--display); margin: 0; text-wrap: balance; }
+  h2 { font-size: 1.05rem; font-weight: 600; margin: 0; }
+  .lead { margin: 6px 0 0; color: var(--muted); max-width: 72ch; }
+  .lead b { color: var(--fg); font-weight: 600; }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr)); gap: 12px; }
+  .tile, .card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
+  .tile { padding: 14px 18px; display: grid; gap: 2px; }
+  .tile span { color: var(--muted); font-size: .8rem; }
+  .tile b { font: 400 2rem/1.1 var(--display); font-variant-numeric: tabular-nums; }
+  .card { padding: 20px; display: grid; gap: 12px; min-width: 0; }
+  .note { margin: 0; color: var(--muted); font-size: .82rem; }
+  .bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .bar input[type=search], .bar select { font: inherit; padding: 7px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--fg); }
+  .bar input[type=search] { flex: 1 1 14rem; min-width: 0; }
+  .bar label { display: flex; gap: 6px; align-items: center; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .scroll { overflow: auto; max-height: 36rem; }
+  table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
+  th { position: sticky; top: 0; background: var(--panel); text-align: right; font-size: .75rem; letter-spacing: .03em; text-transform: uppercase; color: var(--muted); font-weight: 600; padding: 8px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  td { padding: 9px 10px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; vertical-align: top; }
+  th:first-child, td:first-child, .l { text-align: left; }
+  td:first-child { white-space: normal; min-width: 12rem; }
+  td.best { color: var(--ok); font-weight: 600; }
+  td.worst { color: var(--bad); }
+  td.none { color: var(--muted); }
+  .sub { display: block; color: var(--muted); font-size: .75rem; font-weight: 400; }
+  .pill { display: inline-block; padding: 1px 8px; border-radius: 99px; font-size: .75rem; border: 1px solid currentColor; }
+  .pill.ok { color: var(--ok); } .pill.warn { color: var(--warn); } .pill.bad { color: var(--bad); }
+  a { color: inherit; text-underline-offset: 2px; }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap: 16px; }
+  .chart svg { display: block; }
+  .chart text { fill: var(--fg); font-size: 12px; }
+  .chart .n { fill: var(--muted); }
+  .msg { color: var(--muted); padding: 24px 0; text-align: center; }
+  footer { color: var(--muted); font-size: .8rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Comparativo de precios Mérida</h1>
+    <p class="lead">Precios en USD consultados el <b id="fecha">—</b> en las tiendas en línea. <span id="takeaway"></span></p>
+  </header>
+
+  <section class="tiles">
+    <div class="tile"><span>Productos comparados</span><b id="t-productos">—</b></div>
+    <div class="tile"><span>Precios encontrados</span><b id="t-precios">—</b></div>
+    <div class="tile"><span>LatinBien es el más barato</span><b id="t-lb">—</b></div>
+    <div class="tile"><span>Tiendas consultadas solas</span><b id="t-tiendas">—</b></div>
+  </section>
+
+  <section class="card">
+    <h2>Precio por tienda</h2>
+    <p class="note">Verde: el más barato. Rojo: el más caro. Solo productos encontrados en al menos dos tiendas. "Similar" marca un modelo parecido, no idéntico.</p>
+    <div class="bar">
+      <input type="search" id="buscar" placeholder="Buscar producto" aria-label="Buscar producto">
+      <select id="categoria" aria-label="Categoría"><option value="">Todas las categorías</option></select>
+      <label><input type="checkbox" id="exactas"> Solo coincidencias exactas</label>
+    </div>
+    <div class="scroll">
+      <table>
+        <thead><tr id="cabecera"><th>Producto</th></tr></thead>
+        <tbody id="tabla"><tr><td class="msg" colspan="9">Cargando precios…</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="grid2">
+    <section class="card">
+      <h2>Veces que cada tienda tuvo el mejor precio</h2>
+      <p class="note">Entre los productos de la tabla de arriba, con los filtros aplicados.</p>
+      <div class="chart" id="chart"></div>
+    </section>
+    <section class="card">
+      <h2>Estado de cada tienda</h2>
+      <p class="note">Qué tiendas se pueden consultar de forma automática y cuáles no.</p>
+      <div class="scroll">
+        <table>
+          <thead><tr><th>Tienda</th><th class="l">Estado</th><th class="l">Cómo se consulta</th></tr></thead>
+          <tbody id="tiendas"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <section class="card">
+    <h2>Qué producto se encontró en cada tienda</h2>
+    <p class="note">El nombre tal como aparece en la tienda, con enlace para verificar el precio.</p>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Producto buscado</th><th class="l">Tienda</th><th class="l">Producto en la tienda</th><th class="l">Coincidencia</th><th>Precio</th></tr></thead>
+        <tbody id="detalle"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>Datos: <a href="data/precios.json">data/precios.json</a>. Se actualizan con el script <code>scraper/build.mjs</code>.</footer>
+</div>
+
+<script>
+const TIENDAS = ['LatinBien', 'Damasco', 'IVOO', 'Frigilux', 'MegaTecno'];
+const usd = (v) => v == null ? '—' : '$' + v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const $ = (id) => document.getElementById(id);
+const el = (tag, props = {}, ...kids) => { const e = Object.assign(document.createElement(tag), props); e.append(...kids); return e; };
+let precios = [], comparativo = [], tiendas = [];
+
+function armarComparativo(rows) {
+  const grupos = new Map();
+  for (const r of rows) (grupos.get(r.producto) || grupos.set(r.producto, []).get(r.producto)).push(r);
+  const out = [];
+  for (const [producto, rs] of grupos) {
+    if (rs.length < 2) continue;
+    const f = { producto, categoria: rs[0].categoria, todasExactas: rs.every((r) => r.coincidencia === 'exacta') };
+    for (const t of TIENDAS) { const r = rs.find((x) => x.tienda === t); f[t] = r ? +r.precio : null; f[t + '_tipo'] = r?.coincidencia; }
+    const ps = rs.map((r) => +r.precio);
+    f.minimo = Math.min(...ps); f.maximo = Math.max(...ps);
+    f.diferencia = f.maximo - f.minimo;
+    f.mejor = rs.find((r) => +r.precio === f.minimo).tienda;
+    out.push(f);
+  }
+  return out.sort((a, b) => b.diferencia - a.diferencia);
+}
+
+function filtros() {
+  return { q: $('buscar').value.toLowerCase(), cat: $('categoria').value, exactas: $('exactas').checked };
+}
+
+function dibujar() {
+  const { q, cat, exactas } = filtros();
+  const usadas = TIENDAS.filter((t) => precios.some((r) => r.tienda === t));
+  const filas = comparativo.filter((r) => (!cat || r.categoria === cat) && (!q || r.producto.toLowerCase().includes(q)) && (!exactas || r.todasExactas));
+
+  $('cabecera').replaceChildren(el('th', { textContent: 'Producto' }), ...usadas.map((t) => el('th', { textContent: t })), el('th', { textContent: 'Diferencia' }));
+  $('tabla').replaceChildren(...(filas.length ? filas.map((r) => el('tr', {},
+    el('td', { textContent: r.producto }, el('span', { className: 'sub', textContent: r.categoria })),
+    ...usadas.map((t) => {
+      const v = r[t];
+      const td = el('td', { textContent: usd(v), className: v == null ? 'none' : v === r.minimo ? 'best' : v === r.maximo ? 'worst' : '' });
+      if (v != null && r[t + '_tipo'] === 'similar') td.append(el('span', { className: 'sub', textContent: 'similar' }));
+      return td;
+    }),
+    el('td', { textContent: usd(r.diferencia) })
+  )) : [el('tr', {}, el('td', { className: 'msg', colSpan: usadas.length + 2, textContent: 'Ningún producto coincide con los filtros.' }))]));
+
+  // Gráfico de barras horizontal: veces que cada tienda fue la más barata
+  const datos = usadas.map((t) => ({ t, n: filas.filter((r) => r.mejor === t).length }));
+  const w = $('chart').clientWidth || 320, rowH = 32, left = 92, max = Math.max(1, ...datos.map((d) => d.n));
+  const sx = (n) => (n / max) * (w - left - 36);
+  const ns = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(ns, 'svg');
+  svg.setAttribute('width', '100%'); svg.setAttribute('viewBox', `0 0 ${w} ${datos.length * rowH}`);
+  datos.forEach((d, i) => {
+    const y = i * rowH;
+    const label = document.createElementNS(ns, 'text'); label.setAttribute('x', 0); label.setAttribute('y', y + rowH / 2 + 4); label.textContent = d.t;
+    const rect = document.createElementNS(ns, 'rect');
+    rect.setAttribute('x', left); rect.setAttribute('y', y + 7); rect.setAttribute('height', rowH - 14); rect.setAttribute('rx', 3);
+    rect.setAttribute('width', d.n ? Math.max(2, sx(d.n)) : 0);
+    rect.setAttribute('fill', d.t === 'LatinBien' ? 'var(--accent)' : 'var(--bar)');
+    const n = document.createElementNS(ns, 'text'); n.setAttribute('class', 'n'); n.setAttribute('x', left + sx(d.n) + 6); n.setAttribute('y', y + rowH / 2 + 4); n.textContent = d.n;
+    svg.append(label, rect, n);
+  });
+  $('chart').replaceChildren(svg);
+
+  const det = precios.filter((r) => (!cat || r.categoria === cat) && (!q || r.producto.toLowerCase().includes(q)) && (!exactas || r.coincidencia === 'exacta'));
+  $('detalle').replaceChildren(...det.map((r) => el('tr', {},
+    el('td', { textContent: r.producto }),
+    el('td', { className: 'l', textContent: r.tienda }),
+    el('td', { className: 'l', style: 'white-space:normal' }, el('a', { href: r.url, target: '_blank', rel: 'noopener', textContent: r.encontrado })),
+    el('td', { className: 'l' }, el('span', { className: 'pill ' + (r.coincidencia === 'exacta' ? 'ok' : 'warn'), textContent: r.coincidencia })),
+    el('td', { textContent: usd(+r.precio) })
+  )));
+}
+
+function resumen() {
+  const fecha = precios[0]?.fecha;
+  $('fecha').textContent = fecha ? new Intl.DateTimeFormat('es-VE', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(fecha)) : '—';
+  $('t-productos').textContent = comparativo.length;
+  $('t-precios').textContent = precios.length;
+  $('t-lb').textContent = comparativo.filter((r) => r.mejor === 'LatinBien').length;
+  $('t-tiendas').textContent = tiendas.filter((t) => t.estado === 'Automática').length;
+  if (comparativo.length) {
+    const cuenta = {};
+    comparativo.forEach((r) => { cuenta[r.mejor] = (cuenta[r.mejor] || 0) + 1; });
+    const [gana, n] = Object.entries(cuenta).sort((a, b) => b[1] - a[1])[0];
+    const top = comparativo[0];
+    $('takeaway').textContent = `${gana} tiene el precio más bajo en ${n} de ${comparativo.length} productos. La mayor diferencia es en ${top.producto}: ${usd(top.diferencia)} entre la tienda más cara y la más barata.`;
+  }
+  const cls = { 'Automática': 'ok', 'Bloqueada': 'bad', 'Sin web': 'warn', 'Limitada': 'warn' };
+  $('tiendas').replaceChildren(...tiendas.map((t) => el('tr', {},
+    el('td', { textContent: t.tienda }),
+    el('td', { className: 'l' }, el('span', { className: 'pill ' + (cls[t.estado] || ''), textContent: t.estado })),
+    el('td', { className: 'l', style: 'white-space:normal', textContent: t.metodo })
+  )));
+  const cats = [...new Set(precios.map((r) => r.categoria))].sort();
+  $('categoria').append(...cats.map((c) => new Option(c, c)));
+}
+
+Promise.all([fetch('data/precios.json').then((r) => r.json()), fetch('data/tiendas.json').then((r) => r.json())])
+  .then(([p, t]) => {
+    precios = p; tiendas = t; comparativo = armarComparativo(p);
+    resumen(); dibujar();
+    ['buscar', 'categoria', 'exactas'].forEach((id) => $(id).addEventListener(id === 'buscar' ? 'input' : 'change', dibujar));
+    let timer; addEventListener('resize', () => { clearTimeout(timer); timer = setTimeout(dibujar, 150); });
+  })
+  .catch(() => { $('tabla').replaceChildren(el('tr', {}, el('td', { className: 'msg', colSpan: 9, textContent: 'No se pudieron cargar los datos. Revisa que data/precios.json exista.' }))); });
+</script>
+</body>
+</html>
